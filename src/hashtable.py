@@ -15,6 +15,7 @@ class HashTable:
     def __init__(self, capacity):
         self.capacity = capacity  # Number of buckets in the hash table
         self.storage = [None] * capacity
+        self.count = 0
 
 
     def _hash(self, key):
@@ -49,12 +50,38 @@ class HashTable:
 
         # Part 1: Hash collisions should be handled with an error warning. (Think about and
         # investigate the impact this will have on the tests)
-
+    
         # Part 2: Change this so that hash collisions are handled with Linked List Chaining.
 
         Fill this in.
         '''
-        pass
+        
+        index = self._hash_mod
+        
+        if self.storage[index] is not None:
+            item = self.storage[index]
+            
+            while item:
+                if item.key == key:
+                    item.value = value
+                elif item.next:
+                    item = item.next
+                else:
+                    item.next = LinkedPair(key, value)
+                    item = False
+        else:
+            self.storage[index] = LinkedPair(key, value)
+        
+        
+        # if self.count >= self.capacity:
+        #     self.resize()
+            
+        # for item in range(self.count, index, -1):
+        #     self.storage[item] = self.storage[item-1]
+            
+        # self.storage[index] = value
+        
+        # self.count += 1
 
 
 
@@ -66,7 +93,28 @@ class HashTable:
 
         Fill this in.
         '''
-        pass
+        
+        # While loop checks if key in storage matches unwanted key. 
+        # If the key matches, change node to None.
+        # Else, keep looping.
+        
+        index = self._hash(key)
+            
+        if self.storage[index] is not None:
+            _next = True
+            item = self.storage[index]
+            
+            while _next:
+                if item.key == key:
+                    self.storage[index] = None
+                    _next = False
+                elif item.next:
+                    item = item.next
+                else:
+                    _next = False
+        else:
+            print("Key does not exist")
+        
 
 
     def retrieve(self, key):
@@ -77,8 +125,21 @@ class HashTable:
 
         Fill this in.
         '''
-        pass
+        index = self._hash(key)
+        
+        if self.storage[index] is None:
+            return None
+        
+        item = self.storage[index]
 
+        while item.key:
+            if item.key == key:
+                return item.value
+            elif item.next:
+                item = item._next
+            else:
+                return None
+                
 
     def resize(self):
         '''
@@ -87,7 +148,14 @@ class HashTable:
 
         Fill this in.
         '''
-        pass
+        self.capacity *= 2
+        
+        new_storage = [None] * self.capacity
+        
+        for item in range(self.count):
+            new_storage[item] = self.storage[item]
+            
+            self.storage = new_storage
 
 
 
